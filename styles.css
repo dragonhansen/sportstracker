@@ -10,22 +10,31 @@ table {
 }
 
 td, th {
+    white-space: nowrap;
     padding: 8px;
 }
 
 h1, h2{
     color: white;
+    position: relative;
 }
 
-/* Style for the iframe containers */
+/* Style for the iframe container */
 .iframe-container {
-    width: 50%; /* Set the width to 50% for side-by-side placement */
-    float: left; /* Float the containers to make them appear side by side */
-}
+    position: relative;
+    float: left;
+    margin: 20px;
+  }
+  
+  /* Style for the iframe */
+  .iframe-container iframe {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    border: 2px solid #524f4f; /* Add a soft border with a different shade of grey */
+    border-radius: 10px; /* Add rounded corners */  
+  }
 
-
-/* Adjust the iframe styles as needed */
-.iframe {
-    width: 100%; /* Make the iframe take the full width of its container */
-    border: none; /* Remove iframe border */
-}
+  #website-title {
+    margin: 20px;
+  }

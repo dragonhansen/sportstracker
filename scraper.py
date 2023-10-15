@@ -98,8 +98,8 @@ def scrape_gprs():
 
         try:
             # Create HTML for upcoming race
-            html_upcoming_race = "<table><h2>Next Grand Prix</h2><thead><tr><th>Race Name</th><th>Date</th></tr></thead><tbody>"
-            html_upcoming_race += f"<tr><td>{upcoming_text}</td><td>{date_text}</td></tr>"
+            html_upcoming_race = "<table><h2>Next Grand Prix</h2><thead><tr><th>Date</th><th>Race Name</th></tr></thead><tbody>"
+            html_upcoming_race += f"<tr><td>{date_text}</td><td>{upcoming_text}</td></tr>"
             html_upcoming_race += "</tbody></table>"
 
             # Create HTML table for past races
