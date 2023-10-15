@@ -1,0 +1,31 @@
+/* Style for the entire page */
+body{
+    font-family: Arial, sans-serif;
+    background-color: #272626;
+}
+
+table {
+    color: white;
+    text-align: left;
+}
+
+td, th {
+    padding: 8px;
+}
+
+h1, h2{
+    color: white;
+}
+
+/* Style for the iframe containers */
+.iframe-container {
+    width: 50%; /* Set the width to 50% for side-by-side placement */
+    float: left; /* Float the containers to make them appear side by side */
+}
+
+
+/* Adjust the iframe styles as needed */
+.iframe {
+    width: 100%; /* Make the iframe take the full width of its container */
+    border: none; /* Remove iframe border */
+}
