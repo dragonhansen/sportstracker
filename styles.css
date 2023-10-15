@@ -23,18 +23,17 @@ h1, h2{
 .iframe-container {
     position: relative;
     float: left;
-    margin: 20px;
+    margin: 15px;
+    width: 45%;
   }
   
   /* Style for the iframe */
   .iframe-container iframe {
     width: 100%;
-    overflow-x: hidden;
-    position: relative;
     border: 2px solid #524f4f; /* Add a soft border with a different shade of grey */
     border-radius: 10px; /* Add rounded corners */  
   }
 
   #website-title {
-    margin: 20px;
+    margin-left: 20px;
   }

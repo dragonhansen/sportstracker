@@ -120,11 +120,11 @@ def scrape_gprs():
 
 def write_scraped_data(html_file: str, upcoming: str, past: str):
     # Read the existing content of the scraped_data.HTML file
-        with open(html_file, "r", encoding='utf-8') as file:
+        with open(html_file, "r", encoding='UTF-8') as file:
             existing_content = file.read()
 
         # Insert the two new HTML tables inside scraped_data.HTML
-        with open(html_file, "w", encoding='utf-8') as file:
+        with open(html_file, "w", encoding="UTF-8") as file:
             position_begin = existing_content.find("<body>") + len("<body>")
             position_end = existing_content.find("</body>")
             if position_begin != -1 and position_end != -1:
