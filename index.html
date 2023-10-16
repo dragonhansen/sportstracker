@@ -8,29 +8,17 @@
   <h1 id="website-title">dragonhansen's Sports Tracker</h1>
   <div class="iframe-container">
     <h1>Cycling races and results</h1>
-    <iframe src="html/scraped_data_cycling.html" id="cyclingIframe"></iframe>
+    <iframe src="html/scraped_data_cycling.html" id="cyclingIframe" onload="resizeIframe(this)"></iframe>
   </div>
   <div class="iframe-container">
     <h1>F1 GP's and results</h1>
-    <iframe src="html/scraped_data_f1.html" id="f1Iframe"></iframe>
+    <iframe src="html/scraped_data_f1.html" id="f1Iframe" onload="resizeIframe(this)"></iframe>
   </div>
   <script>
-    // Function to resize the iframe based on its content
-    function resizeIframe(iframeId) {
-      var iframe = document.getElementById(iframeId);
-
-      iframe.onload = function() {
-        var iframeWindow = iframe.contentWindow || iframe.contentDocument.defaultView;
-        var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-        var contentHeight = iframeDocument.documentElement.scrollHeight;
-
-        iframe.style.height = contentHeight + 'px';
-      };
+    function resizeIframe(obj) {
+      obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
     }
-
-    // Call the function for each iframe
-    resizeIframe('f1Iframe');
-    resizeIframe('cyclingIframe');
   </script>
+  
 </body>
 </html>

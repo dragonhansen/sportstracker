@@ -19,9 +19,9 @@ h1, h2{
   
   /* Style for the iframe */
   .iframe-container iframe {
-    width: 100%;
     border: 2px solid #524f4f; /* Add a soft border with a different shade of grey */
-    border-radius: 10px; /* Add rounded corners */  
+    border-radius: 10px; /* Add rounded corners */ 
+    width: 100%;
   }
 
   #website-title {
@@ -42,4 +42,5 @@ h1, h2{
 
   .grid-item {
     margin: 5px;
+    white-space: nowrap;
   }
