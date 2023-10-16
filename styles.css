@@ -6,22 +6,24 @@ body{
 
 h1, h2{
     color: white;
-    position: relative;
+}
+
+.stats-container {
+  display: flex;
 }
 
 /* Style for the iframe container */
 .iframe-container {
-    position: relative;
-    float: left;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
     margin: 10px;
-    width: 45%;
   }
   
   /* Style for the iframe */
   .iframe-container iframe {
     border: 2px solid #524f4f; /* Add a soft border with a different shade of grey */
-    border-radius: 10px; /* Add rounded corners */ 
-    width: 100%;
+    border-radius: 10px; /* Add rounded corners */
   }
 
   #website-title {
@@ -41,6 +43,6 @@ h1, h2{
   }
 
   .grid-item {
-    margin: 5px;
+    margin: 4px;
     white-space: nowrap;
   }
