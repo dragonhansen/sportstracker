@@ -4,16 +4,6 @@ body{
     background-color: #272626;
 }
 
-table {
-    color: white;
-    text-align: left;
-}
-
-td, th {
-    white-space: nowrap;
-    padding: 8px;
-}
-
 h1, h2{
     color: white;
     position: relative;
@@ -23,7 +13,7 @@ h1, h2{
 .iframe-container {
     position: relative;
     float: left;
-    margin: 15px;
+    margin: 10px;
     width: 45%;
   }
   
@@ -35,5 +25,21 @@ h1, h2{
   }
 
   #website-title {
-    margin-left: 20px;
+    margin-left: 10px;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    color: white;
+  }
+
+  .grid-container-wide {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    color: white;
+  }
+
+  .grid-item {
+    margin: 5px;
   }
