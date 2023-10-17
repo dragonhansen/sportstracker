@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, url_for, redirect
 import schedule
 import time
 import threading
@@ -10,12 +10,14 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-# Define a function to run the scraper at set intervals
+@app.route('/trigger-scraper', methods=['POST'])
+# Define a function to run the scraper when a post request is made
 def run_scraper():
     print("Running the scraper...")
     scrape_pcs()
     scrape_gprs()
     print("Scraper finished")
+    return redirect(url_for('index'))
 
 # Schedule the scraper to run every hour (adjust as needed)
 schedule.every(900).seconds.do(run_scraper)
