@@ -1,11 +1,14 @@
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from flask import Flask, render_template
 import schedule
 import time
 import threading
 from scraper import scrape_gprs, scrape_pcs
 
-hostName = "localhost"
-serverPort = 8000
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return render_template("index.html")
 
 # Define a function to run the scraper at set intervals
 def run_scraper():
@@ -28,16 +31,5 @@ if __name__ == "__main__":
     schedule_thread = threading.Thread(target=schedule_thread)
     schedule_thread.daemon = True
     schedule_thread.start()
-    
-    # Define parameters for the webserver
-    handler = SimpleHTTPRequestHandler
-    webServer = HTTPServer((hostName, serverPort), handler)
-    print(f"Server started at {hostName}:{serverPort}")
 
-    try:
-        webServer.serve_forever()
-    except KeyboardInterrupt:
-        pass
-
-    webServer.server_close()
-    print("Server stopped.")
+    app.run(debug=True, host='localhost', port=8000)

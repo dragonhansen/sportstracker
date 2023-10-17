@@ -52,7 +52,7 @@ def scrape_pcs():
             html_container += html_grid_previous
 
             # Write the scraped data to HTML file
-            write_scraped_data("html/scraped_data_cycling.html", html_container)
+            write_scraped_data("templates/scraped_data_cycling.html", html_container)
 
         except UnboundLocalError as e:
             print(e)
@@ -102,7 +102,7 @@ def scrape_gprs():
                 html_grid_previous += f"<div class='grid-item'>{data['Race']}</div><div class='grid-item'>{data['Winner']}</div>"
             html_grid_previous += "</div>"
             html_container += html_grid_previous
-            write_scraped_data("html/scraped_data_f1.html", html_container)
+            write_scraped_data("templates/scraped_data_f1.html", html_container)
 
         except UnboundLocalError as e:
             print(e)
