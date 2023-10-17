@@ -32,6 +32,7 @@ def scrape_pcs():
             winner = row.select("td")[3].get_text(strip=True)
 
             # If there is no winner break from the loop and define the race to be the upcoming race
+            upcoming_race = ""
             if winner == "":
                 upcoming_race = ({"Date": date, "Race Name": race_name})
                 break
@@ -40,19 +41,21 @@ def scrape_pcs():
             past_races.append({"Date": date, "Race Name": race_name, "Winner": winner})
         
         try:
-
-            html_grid_upcoming = f"<h2>Next Grand Prix</h2><div class='grid-container'><div class='grid-item'>Date</div><div class='grid-item'>Race Name</div><div class='grid-item'>{upcoming_race['Date']}</div><div class='grid-item'>{upcoming_race['Race Name']}</div></div>"
-
+            html_container = ""
+            if upcoming_race != "":
+                html_grid_upcoming = f"<h2>Next Grand Prix</h2><div class='grid-container'><div class='grid-item'>Date</div><div class='grid-item'>Race Name</div><div class='grid-item'>{upcoming_race['Date']}</div><div class='grid-item'>{upcoming_race['Race Name']}</div></div>"
+                html_container += html_grid_upcoming
             html_grid_previous = "<h2>Cycling races and results</h2><div class='grid-container-wide'><div class='grid-item'>Date</div><div class='grid-item'>Race Name</div><div class='grid-item'>Winner</div>"
             for data in past_races:
                 html_grid_previous += f"<div class='grid-item'>{data['Date']}</div><div class='grid-item'>{data['Race Name']}</div><div class='grid-item'>{data['Winner']}</div>"
             html_grid_previous += "</div>"
-            write_scraped_data("html/scraped_data_f1.html", html_grid_upcoming, html_grid_previous)
+            html_container += html_grid_previous
 
             # Write the scraped data to HTML file
-            write_scraped_data("html/scraped_data_cycling.html", html_grid_upcoming, html_grid_previous)
+            write_scraped_data("html/scraped_data_cycling.html", html_container)
 
-        except UnboundLocalError:
+        except UnboundLocalError as e:
+            print(e)
             print("Error: could net scrape PCS data properly, aborting...")
 
 def scrape_gprs():
@@ -90,18 +93,22 @@ def scrape_gprs():
                 break
 
         try:
-            html_grid_upcoming = f"<h2>Next Grand Prix</h2><div class='grid-container'><div class='grid-item'>Date</div><div class='grid-item'>Race Name</div><div class='grid-item'>{date_text}</div><div class='grid-item'>{upcoming_text}</div></div>"
-
+            html_container = ""
+            if date_text:
+                html_grid_upcoming = f"<h2>Next Grand Prix</h2><div class='grid-container'><div class='grid-item'>Date</div><div class='grid-item'>Race Name</div><div class='grid-item'>{date_text}</div><div class='grid-item'>{upcoming_text}</div></div>"
+                html_container += html_grid_upcoming
             html_grid_previous = "<h2>Finished GP's</h2><div class='grid-container'><div class='grid-item'>Race Name</div><div class='grid-item'>Winner</div>"
             for data in past_races:
                 html_grid_previous += f"<div class='grid-item'>{data['Race']}</div><div class='grid-item'>{data['Winner']}</div>"
             html_grid_previous += "</div>"
-            write_scraped_data("html/scraped_data_f1.html", html_grid_upcoming, html_grid_previous)
+            html_container += html_grid_previous
+            write_scraped_data("html/scraped_data_f1.html", html_container)
 
-        except UnboundLocalError:
+        except UnboundLocalError as e:
+            print(e)
             print("Error: could net scrape F1 data properly, aborting...")
 
-def write_scraped_data(html_file: str, upcoming: str, past: str):
+def write_scraped_data(html_file: str, html_source: str):
     # Read the existing content of the scraped_data.HTML file
         with open(html_file, "r", encoding='UTF-8') as file:
             existing_content = file.read()
@@ -112,8 +119,7 @@ def write_scraped_data(html_file: str, upcoming: str, past: str):
             position_end = existing_content.find("</body>")
             if position_begin != -1 and position_end != -1:
                 file.write(existing_content[:position_begin])
-                file.write(upcoming)
-                file.write(past)
+                file.write(html_source)
                 file.write(existing_content[position_end:])
         
 scrape_pcs()
