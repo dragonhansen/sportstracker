@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, url_for, redirect
-import schedule
 import time
-import threading
+from apscheduler.schedulers.background import BackgroundScheduler
 from scraper import scrape_gprs, scrape_pcs
 
 app = Flask(__name__)
@@ -23,18 +22,10 @@ def run_scraper():
     print("Scraper finished")
 
 # Schedule the scraper to run every hour (adjust as needed)
-schedule.every(15).seconds.do(run_scraper)
+scheduler = BackgroundScheduler()
+scheduler.add_job(run_scraper, "interval", seconds=15)
 
-# Start a separate thread for the scheduler
-def schedule_thread():
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
 
 if __name__ == "__main__":    
-    # Start the scheduler thread
-    schedule_thread = threading.Thread(target=schedule_thread)
-    schedule_thread.daemon = True
-    schedule_thread.start()
-
+    scheduler.start()
     app.run(debug=True, host='localhost', port=8000)
