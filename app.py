@@ -1,17 +1,11 @@
-import http.server
-import socketserver
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 import schedule
 import time
+import threading
 from scraper import scrape_gprs, scrape_pcs
 
-# Specify the directory where your HTML and other static files are located
-directory = "html"
-
-# Set the port number for your web server
-port = 8000
-
-# Create a web server that serves files from the specified directory
-Handler = http.server.SimpleHTTPRequestHandler
+hostName = "localhost"
+serverPort = 8000
 
 # Define a function to run the scraper at set intervals
 def run_scraper():
@@ -29,15 +23,21 @@ def schedule_thread():
         schedule.run_pending()
         time.sleep(1)
 
-# Start the scheduler thread
-import threading
-schedule_thread = threading.Thread(target=schedule_thread)
-schedule_thread.daemon = True
-schedule_thread.start()
+if __name__ == "__main__":    
+    # Start the scheduler thread
+    schedule_thread = threading.Thread(target=schedule_thread)
+    schedule_thread.daemon = True
+    schedule_thread.start()
+    
+    # Define parameters for the webserver
+    handler = SimpleHTTPRequestHandler
+    webServer = HTTPServer((hostName, serverPort), handler)
+    print(f"Server started at {hostName}:{serverPort}")
 
-with socketserver.TCPServer(("", port), Handler) as httpd:
-    print(f"Serving at port {port}")
     try:
-        httpd.serve_forever()
+        webServer.serve_forever()
     except KeyboardInterrupt:
-        print("\nServer is shutting down.")
+        pass
+
+    webServer.server_close()
+    print("Server stopped.")
