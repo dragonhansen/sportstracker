@@ -11,16 +11,19 @@ def index():
     return render_template("index.html")
 
 @app.route('/trigger-scraper', methods=['POST'])
-# Define a function to run the scraper when a post request is made
+def trigger_scraper():
+    run_scraper()
+    return redirect(url_for('index'))
+
+# Define a function to run the scraper
 def run_scraper():
     print("Running the scraper...")
     scrape_pcs()
     scrape_gprs()
     print("Scraper finished")
-    return redirect(url_for('index'))
 
 # Schedule the scraper to run every hour (adjust as needed)
-schedule.every(900).seconds.do(run_scraper)
+schedule.every(15).seconds.do(run_scraper)
 
 # Start a separate thread for the scheduler
 def schedule_thread():
