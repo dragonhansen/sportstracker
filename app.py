@@ -21,9 +21,9 @@ def run_scraper():
     scrape_gprs()
     print("Scraper finished")
 
-# Schedule the scraper to run every hour (adjust as needed)
+# Schedule the scraper to run at set intervals
 scheduler = BackgroundScheduler()
-scheduler.add_job(run_scraper, "interval", seconds=15)
+scheduler.add_job(run_scraper, "interval", seconds=900)
 
 
 if __name__ == "__main__":    
