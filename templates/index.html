@@ -10,19 +10,12 @@
   <div class="stats-container">
     <div class="iframe-container">
       <h1>Cycling races and results</h1>
-      {% include 'scraped_data_cycling.html' %}
-      <iframe id="cyclingIframe" onload="resizeIframe(this)"></iframe>
+      <div class="data-container">{% include 'scraped_data_cycling.html'%}</div>
     </div>
     <div class="iframe-container">
       <h1>F1 GP's and results</h1>
-      <iframe src="templates/scraped_data_f1.html" id="f1Iframe" onload="resizeIframe(this)"></iframe>
+      <div class="data-container">{% include 'scraped_data_f1.html'%}</div>
     </div>
   </div>
-  <script>
-    function resizeIframe(obj) {
-      obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-    }
-  </script>
-  
 </body>
 </html>

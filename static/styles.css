@@ -21,7 +21,7 @@ h1, h2{
   }
   
   /* Style for the iframe */
-  .iframe-container iframe {
+  .data-container{
     border: 2px solid #524f4f; /* Add a soft border with a different shade of grey */
     border-radius: 10px; /* Add rounded corners */
   }
