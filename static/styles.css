@@ -8,6 +8,22 @@ h1, h2{
     color: white;
 }
 
+.title-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.title-container button {
+  color: white;
+  background-color: #313030;
+  border-color: #313030;
+  border-radius: 10px;
+  padding: 5px;
+  font-size: large;
+  margin-left: 50px;
+}
+
 .outer-container {
   display: flex;
 }
