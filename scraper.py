@@ -32,7 +32,6 @@ def scrape_pcs():
             winner = row.select("td")[3].get_text(strip=True)
 
             # If there is no winner break from the loop and define the race to be the upcoming race
-            upcoming_race = ""
             if winner == "":
                 upcoming_race = ({"Date": date, "Race Name": race_name})
                 break
@@ -80,17 +79,29 @@ def scrape_gprs():
         past_races = []
 
         for row in rows:
+            # Check if entires for grand prixs and winners exist and find the text if they do
             if grand_prix := row.select_one("a"):
                 gp_text = grand_prix.get_text(strip=True)
             if winner := grand_prix:
                 winner_text = winner.find_next("a").get_text(strip=True)
+
+            # If there was a winner append the data to the past races list and continue
+            if winner:
                 past_races.append({"Race": gp_text, "Winner": winner_text})
                 continue
+
+            # There was not any winner so either the grand prix was cancelled or we have reached the upcoming grand prix
+            # Find text for upcoming grand prix
             upcoming_race = row.select_one("td").find_next()
             upcoming_text = upcoming_race.get_text(strip=True)
-            if upcoming_text != "Emilia Romagna":
-                date_text = upcoming_race.find_next("td").get_text(strip=True)
-                break
+            date_text = upcoming_race.find_next("td").get_text(strip=True)
+
+            # If we have been fooled and the grand prix was actully cancelled we continue
+            if date_text == "Cancelled":
+                continue
+
+            # We have defined the upcoming race data and the grand prix wasn't cancelled so no more scraping
+            break
 
         try:
             html_container = ""
