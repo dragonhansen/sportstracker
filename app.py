@@ -14,6 +14,11 @@ def trigger_scraper():
     run_scraper()
     return redirect(url_for('index'))
 
+@app.route('/add-todo', methods=['POST'])
+def addTodo():
+    input = request.form['nm']
+    return render_template("index.html", todo_input=input)
+
 # Define a function to run the scraper
 def run_scraper():
     print("Running the scraper...")
