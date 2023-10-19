@@ -108,19 +108,17 @@ def scrape_gprs():
             print(e)
             print("Error: could net scrape F1 data properly, aborting...")
 
-def write_scraped_data(html_file: str, html_source: str):
-    # Read the existing content of the scraped_data.HTML file
-        with open(html_file, "r", encoding='UTF-8') as file:
-            existing_content = file.read()
+html_boilerplate = "<!DOCTYPE html><html><body></html></body>"
 
-        # Insert the two new HTML tables inside scraped_data.HTML
-        with open(html_file, "w", encoding="UTF-8") as file:
-            position_begin = existing_content.find("<body>") + len("<body>")
-            position_end = existing_content.find("</body>")
-            if position_begin != -1 and position_end != -1:
-                file.write(existing_content[:position_begin])
-                file.write(html_source)
-                file.write(existing_content[position_end:])
+def write_scraped_data(html_file: str, html_source: str):
+    # Insert the two new HTML tables inside scraped_data.HTML
+    with open(html_file, "w", encoding="UTF-8") as file:
+        file.write(html_boilerplate)
+        position_begin = html_boilerplate.find("<body>") + len("<body>")
+        position_end = html_boilerplate.find("</body>")
+        file.write(html_boilerplate[:position_begin])
+        file.write(html_source)
+        file.write(html_boilerplate[position_end:])
         
 scrape_pcs()
 scrape_gprs()
