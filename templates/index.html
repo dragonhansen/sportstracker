@@ -11,6 +11,7 @@
     <form  action='/trigger-scraper' method="post">
       <button>Update</button>
     </form>
+    <button onclick="request_scrape()">Update using JS fetch</button>
   </div>
   <div class="outer-container">
     <div class="stats-container">
@@ -23,4 +24,12 @@
     </div>
   </div>
 </body>
+<script>
+  function request_scrape() {
+    fetch("/trigger-scraper", {
+      method: "POST"
+    })
+    .catch(err => console.log(err))
+  }
+</script>
 </html>
