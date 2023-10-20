@@ -45,16 +45,17 @@ def scrape_pcs():
         try:
             table_upcoming = ""
             if upcoming_race:
-                table_upcoming += "<table><h2>Next Race</h2><tbody><tr><th>Date</th><th>Race Name</th></tr>"
-                table_upcoming += f"<tr><td>{data['Date']}</td><td>{data['Race Name']}</td></tr>"
+                table_upcoming += "<table><h2>Next Race</h2><thead><tr><th>Date</th><th>Race Name</th></tr></thead>"
+                table_upcoming += f"<tbody><tr><td>{data['Date']}</td><td>{data['Race Name']}</td></tr>"
                 table_upcoming += "</tbody></table>"
             
             table_previous = ""
-            table_previous += "<table><h2>Finished Races</h2><tr><th>Date</th><th>Race Name</th><th>Winner</th></tr>"
+            table_previous += "<table><h2>Finished Races</h2><thead><tr><th>Date</th><th>Race Name</th><th>Winner</th></tr></thead>"
+            table_previous += "<tbody>"
             for data in past_races:
                 table_previous += f"<tr><td>{data['Date']}</td><td>{data['Race Name']}</td><td>{data['Winner']}</td></tr>"
 
-            table_previous += "</table>"
+            table_previous += "</tbody></table>"
 
             html_table = table_upcoming+table_previous
 
@@ -115,16 +116,17 @@ def scrape_gprs():
         try:
             table_upcoming = ""
             if date_text:
-                table_upcoming += "<table><h2>Next Grand Prix</h2><thead><tr><th>Date</th><th>Race Name</th></tr>"
-                table_upcoming += f"<tr><td>{date_text}</td><td>{upcoming_text}</td></tr>"
-                table_upcoming += "</thead></table>"
+                table_upcoming += "<table><h2>Next Grand Prix</h2><thead><tr><th>Date</th><th>Grand Prix</th></tr></thead>"
+                table_upcoming += f"<tbody><tr><td>{date_text}</td><td>{upcoming_text}</td></tr>"
+                table_upcoming += "</tbody></table>"
             
             table_previous = ""
-            table_previous += "<table><h2>Finished GP's</h2><tr><th>Race Name</th><th>Winner</th></tr>"
+            table_previous += "<table><h2>Finished GP's</h2><thead><tr><th>Grand Prix</th><th>Winner</th></tr></thead>"
+            table_previous += "<tbody>"
             for data in past_races:
                 table_previous += f"<tr><td>{data['Race']}</td><td>{data['Winner']}</td></tr>"
 
-            table_previous += "</table>"
+            table_previous += "</tbody></table>"
 
             html_table = table_upcoming+table_previous
 

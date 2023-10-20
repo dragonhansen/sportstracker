@@ -7,7 +7,6 @@ body{
 
 .title-container {
   display: flex;
-  flex-direction: row;
   align-items: center;
 }
 
@@ -18,11 +17,11 @@ body{
   border-radius: 10px;
   padding: 5px;
   font-size: large;
-  margin-left: 50px;
+  margin-left: 25px;
 }
 
 .outer-container {
-  display: flex;
+  display: inline-flex;
 }
 
 /* Style for the iframe container */
@@ -34,6 +33,7 @@ body{
   padding: 10px;
   background-color: #313030;
   border-radius: 10px; /* Add rounded corners */
+  white-space: nowrap;
 }
 
 .stats-container h1 {
@@ -41,23 +41,15 @@ body{
   margin: 0px;
 }
 
+.data-container table {
+  text-align: left;
+}
+
+.data-container th, td {
+  padding-right:  20px;
+  padding-bottom: 5px;
+}
+
 #website-title {
   margin-left: 10px;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  color: white;
-}
-
-.grid-container-wide {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  color: white;
-}
-
-.grid-item {
-  margin: 4px;
-  white-space: nowrap;
 }
