@@ -43,7 +43,7 @@ def scrape_pcs():
             past_races.append({"Date": date, "Race": race_name, "Winner": winner})
         
         try:
-            html_table = generate_html(upcoming_race, past_races)
+            html_table = generate_html(upcoming_race, past_races, False)
             
             # Write the scraped data to HTML file
             write_scraped_data("templates/scraped_data_cycling.html", html_table)
@@ -101,7 +101,7 @@ def scrape_gprs():
             break
 
         try:
-            html_table = generate_html(upcoming_race, past_races)
+            html_table = generate_html(upcoming_race, past_races, True)
             write_scraped_data("templates/scraped_data_f1.html", html_table)
 
         except UnboundLocalError as e:
@@ -109,24 +109,20 @@ def scrape_gprs():
             print("Error: could net scrape F1 data properly, aborting...")
 
 
-def generate_html(upcoming_race: dict, past_races: list) -> str:
+def generate_html(upcoming_race: dict, past_races: list, isF1Data: bool) -> str:
     table_upcoming = ""
     if upcoming_race:
-        table_upcoming += "<table><h2>Next Race</h2><thead><tr><th>Date</th><th>Race Name</th></tr></thead>"
+        table_upcoming += f"<table><h2>{'Next Grand Prix' if isF1Data else 'Next Race'}</h2><thead><tr><th>Date</th><th>Race Name</th></tr></thead>"
         table_upcoming += f"<tbody><tr><td>{upcoming_race['Date']}</td><td>{upcoming_race['Race']}</td></tr>"
         table_upcoming += "</tbody></table>"
     
+    if past_races == []:
+        return table_upcoming
+
     table_previous = ""
-    if past_races[0].get('Date'):
-        table_previous += "<table><h2>Finished Races</h2><thead><tr><th>Date</th><th>Race Name</th><th>Winner</th></tr></thead><tbody>"
-        for data in past_races:
-            table_previous += f"<tr><td>{data['Date']}</td><td>{data['Race']}</td><td>{data['Winner']}</td></tr>"
-
-    else:
-        table_previous += "<table><h2>Finished GP's</h2><thead><tr><th>Race Name</th><th>Winner</th></tr></thead><tbody>"
-        for data in past_races:
-            table_previous += f"<tr><td>{data['Race']}</td><td>{data['Winner']}</td></tr>"
-
+    table_previous += f"<table><h2>{'Finished GPs' if isF1Data else 'Finished Races'}</h2><thead><tr>{'' if isF1Data else '<th>Date</th>'}<th>Race Name</th><th>Winner</th></tr></thead><tbody>"
+    for data in past_races:
+        table_previous += f"<tr>{'' if isF1Data else '<td>'+data['Date']+'</td>'}<td>{data['Race']}</td><td>{data['Winner']}</td></tr>"
     table_previous += "</tbody></table>"
 
     return table_upcoming+table_previous
