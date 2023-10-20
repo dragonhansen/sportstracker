@@ -31,6 +31,9 @@ def scrape_pcs():
             race_name = row.select("td")[2].get_text(strip=True)
             winner = row.select("td")[3].get_text(strip=True)
 
+            # Define upcoming race regardless if season is finished so we can switch on the parameter later
+            upcoming_race = None
+
             # If there is no winner break from the loop and define the race to be the upcoming race
             if winner == "":
                 upcoming_race = ({"Date": date, "Race Name": race_name})
@@ -40,18 +43,24 @@ def scrape_pcs():
             past_races.append({"Date": date, "Race Name": race_name, "Winner": winner})
         
         try:
-            html_container = ""
-            if upcoming_race != "":
-                html_grid_upcoming = f"<h2>Next Grand Prix</h2><div class='grid-container'><div class='grid-item'>Date</div><div class='grid-item'>Race Name</div><div class='grid-item'>{upcoming_race['Date']}</div><div class='grid-item'>{upcoming_race['Race Name']}</div></div>"
-                html_container += html_grid_upcoming
-            html_grid_previous = "<h2>Cycling races and results</h2><div class='grid-container-wide'><div class='grid-item'>Date</div><div class='grid-item'>Race Name</div><div class='grid-item'>Winner</div>"
+            table_upcoming = ""
+            if upcoming_race:
+                table_upcoming += "<table><h2>Next Race</h2><tbody><tr><th>Date</th><th>Race Name</th></tr>"
+                table_upcoming += f"<tr><td>{data['Date']}</td><td>{data['Race Name']}</td></tr>"
+                table_upcoming += "</tbody></table>"
+            
+            table_previous = ""
+            table_previous += "<table><h2>Finished Races</h2><tr><th>Date</th><th>Race Name</th><th>Winner</th></tr>"
             for data in past_races:
-                html_grid_previous += f"<div class='grid-item'>{data['Date']}</div><div class='grid-item'>{data['Race Name']}</div><div class='grid-item'>{data['Winner']}</div>"
-            html_grid_previous += "</div>"
-            html_container += html_grid_previous
+                table_previous += f"<tr><td>{data['Date']}</td><td>{data['Race Name']}</td><td>{data['Winner']}</td></tr>"
+
+            table_previous += "</table>"
+
+            html_table = table_upcoming+table_previous
+
 
             # Write the scraped data to HTML file
-            write_scraped_data("templates/scraped_data_cycling.html", html_container)
+            write_scraped_data("templates/scraped_data_cycling.html", html_table)
 
         except UnboundLocalError as e:
             print(e)
@@ -100,36 +109,42 @@ def scrape_gprs():
             if date_text == "Cancelled":
                 continue
 
-            # We have defined the upcoming race data and the grand prix wasn't cancelled so no more scraping
+            # We have defined the upcoming race data and the grand prix was not cancelled so no more scraping
             break
 
         try:
-            html_container = ""
+            table_upcoming = ""
             if date_text:
-                html_grid_upcoming = f"<h2>Next Grand Prix</h2><div class='grid-container'><div class='grid-item'>Date</div><div class='grid-item'>Race Name</div><div class='grid-item'>{date_text}</div><div class='grid-item'>{upcoming_text}</div></div>"
-                html_container += html_grid_upcoming
-            html_grid_previous = "<h2>Finished GP's</h2><div class='grid-container'><div class='grid-item'>Race Name</div><div class='grid-item'>Winner</div>"
+                table_upcoming += "<table><h2>Next Grand Prix</h2><thead><tr><th>Date</th><th>Race Name</th></tr>"
+                table_upcoming += f"<tr><td>{date_text}</td><td>{upcoming_text}</td></tr>"
+                table_upcoming += "</thead></table>"
+            
+            table_previous = ""
+            table_previous += "<table><h2>Finished GP's</h2><tr><th>Race Name</th><th>Winner</th></tr>"
             for data in past_races:
-                html_grid_previous += f"<div class='grid-item'>{data['Race']}</div><div class='grid-item'>{data['Winner']}</div>"
-            html_grid_previous += "</div>"
-            html_container += html_grid_previous
-            write_scraped_data("templates/scraped_data_f1.html", html_container)
+                table_previous += f"<tr><td>{data['Race']}</td><td>{data['Winner']}</td></tr>"
+
+            table_previous += "</table>"
+
+            html_table = table_upcoming+table_previous
+
+            
+            write_scraped_data("templates/scraped_data_f1.html", html_table)
 
         except UnboundLocalError as e:
             print(e)
             print("Error: could net scrape F1 data properly, aborting...")
 
-html_boilerplate = "<!DOCTYPE html><html><body></html></body>"
+html_boilerplate = "<!DOCTYPE html><html><body></body></html>"
 
 def write_scraped_data(html_file: str, html_source: str):
     # Insert the two new HTML tables inside scraped_data.HTML
     with open(html_file, "w", encoding="UTF-8") as file:
         file.write(html_boilerplate)
-        position_begin = html_boilerplate.find("<body>") + len("<body>")
-        position_end = html_boilerplate.find("</body>")
-        file.write(html_boilerplate[:position_begin])
+        wrtite_pos = html_boilerplate.find("</body>")
+        file.write(html_boilerplate[:wrtite_pos])
         file.write(html_source)
-        file.write(html_boilerplate[position_end:])
+        file.write(html_boilerplate[wrtite_pos:])
         
 scrape_pcs()
 scrape_gprs()
