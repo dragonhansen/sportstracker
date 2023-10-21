@@ -46,7 +46,7 @@ def scrape_pcs():
             html_table = generate_html(upcoming_race, past_races, False)
             
             # Write the scraped data to HTML file
-            write_scraped_data("templates/scraped_data_cycling.html", html_table)
+            write_scraped_data("src/templates/scraped_data_cycling.html", html_table)
 
         except UnboundLocalError as e:
             print(e)
@@ -102,7 +102,7 @@ def scrape_gprs():
 
         try:
             html_table = generate_html(upcoming_race, past_races, True)
-            write_scraped_data("templates/scraped_data_f1.html", html_table)
+            write_scraped_data("src/templates/scraped_data_f1.html", html_table)
 
         except UnboundLocalError as e:
             print(e)

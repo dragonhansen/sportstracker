@@ -1,4 +1,4 @@
 venv/
-templates/scraped_data_cycling.html
-templates/scraped_data_f1.html
+src/templates/scraped_data_cycling.html
+src/templates/scraped_data_f1.html
 __pycache__/

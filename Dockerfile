@@ -5,10 +5,10 @@ FROM python:3.9
 WORKDIR /app
 
 # Copy the application code and requirements.txt into the container
-COPY app.py /app/
-COPY scraper.py /app/
-COPY static/* /app/static/
-COPY templates/* /app/templates/
+COPY src/app.py /app/
+COPY src/scraper.py /app/
+COPY src/static/* /app/static/
+COPY src/templates/* /app/templates/
 COPY requirements.txt /app/
 
 # Install any project dependencies
