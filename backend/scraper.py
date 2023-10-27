@@ -1,5 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
+import sqlite3
+
+conn = sqlite3.connect('backend/data.db')
+
+cursor = conn.cursor()
+
+cursor.execute("CREATE TABLE IF NOT EXISTS cycling_data (Date TEXT, Race TEXT, Winner TEXT, IsUpcoming INTEGER)")
+cursor.execute("CREATE TABLE IF NOT EXISTS f1_data (Date TEXT, Race TEXT, Winner TEXT, IsUpcoming INTEGER)")
 
 
 def scrape_pcs():
@@ -22,31 +30,30 @@ def scrape_pcs():
         # Find all table rows (excluding the header row)
         rows = soup.select(".table-cont table tbody tr")
 
-        # Initialize lists to store the scraped data from past races
-        past_races = []
-
         # Loop through the rows and extract the data
         for row in rows:
             date = row.select_one("td.cu500").get_text(strip=True)
             race_name = row.select("td")[2].get_text(strip=True)
             winner = row.select("td")[3].get_text(strip=True)
 
-            # Define upcoming race regardless if season is finished so we can switch on the parameter later
-            upcoming_race = None
-
             # If there is no winner break from the loop and define the race to be the upcoming race
             if winner == "":
-                upcoming_race = ({"Date": date, "Race": race_name})
+                cursor.execute("INSERT INTO cycling_data (Date, Race, Winner, IsUpcoming) VALUES (?, ?, ?, ?)", (date, race_name, winner, 1))
                 break
 
             # Append scraped data to list
-            past_races.append({"Date": date, "Race": race_name, "Winner": winner})
-        
+            cursor.execute("INSERT INTO cycling_data (Date, Race, Winner, IsUpcoming) VALUES (?, ?, ?, ?)", (date, race_name, winner, 0))
+
         try:
-            html_table = generate_html(upcoming_race, past_races, False)
-            
-            # Write the scraped data to HTML file
-            write_scraped_data("src/templates/scraped_data_cycling.html", html_table)
+            # Execute a SELECT query to retrieve data from the table
+            cursor.execute("SELECT * FROM cycling_data")
+
+            # Fetch all rows from the result set
+            rows = cursor.fetchall()
+
+            # Iterate over the rows and print them
+            for row in rows:
+                print(row)
 
         except UnboundLocalError as e:
             print(e)
@@ -70,9 +77,7 @@ def scrape_gprs():
 
         # Find the F1 2023 Race winners container
         rows = soup.find("h2", text="F1 2023 winners").find_next("table").select("tbody tr")
-
-        past_races = []
-
+        
         for row in rows:
             # Check if entires for grand prixs and winners exist and find the text if they do
             if grand_prix := row.select_one("a"):
@@ -82,7 +87,7 @@ def scrape_gprs():
 
             # If there was a winner append the data to the past races list and continue
             if winner:
-                past_races.append({"Race": gp_text, "Winner": winner_text})
+                cursor.execute("INSERT INTO f1_data (Date, Race, Winner, IsUpcoming) VALUES (?, ?, ?, ?)", ("", gp_text, winner_text, 0))
                 continue
 
             # There was not any winner so either the grand prix was cancelled or we have reached the upcoming grand prix
@@ -90,52 +95,29 @@ def scrape_gprs():
             gp_text = row.select_one("td").find_next().get_text(strip=True)
             date_text = row.select_one("td").find_next().findNext().get_text(strip=True)
 
-            upcoming_race = {"Race": gp_text, "Date": date_text}
-
             # If we have been fooled and the grand prix was actully cancelled we continue
             if date_text == "Cancelled":
-                upcoming_race = None
                 continue
+
+            cursor.execute("INSERT INTO f1_data (Date, Race, Winner, IsUpcoming) VALUES (?, ?, ?, ?)", (date_text, gp_text, "", 1))
 
             # We have defined the upcoming race data and the grand prix was not cancelled so no more scraping
             break
 
         try:
-            html_table = generate_html(upcoming_race, past_races, True)
-            write_scraped_data("src/templates/scraped_data_f1.html", html_table)
+            # Execute a SELECT query to retrieve data from the table
+            cursor.execute("SELECT * FROM f1_data")
+
+            # Fetch all rows from the result set
+            rows = cursor.fetchall()
+
+            # Iterate over the rows and print them
+            for row in rows:
+                print(row)
 
         except UnboundLocalError as e:
             print(e)
             print("Error: could net scrape F1 data properly, aborting...")
-
-
-def generate_html(upcoming_race: dict, past_races: list, isF1Data: bool) -> str:
-    table_upcoming = ""
-    if upcoming_race:
-        table_upcoming += f"<table><h2>{'Next Grand Prix' if isF1Data else 'Next Race'}</h2><thead><tr><th>Date</th><th>Race Name</th></tr></thead>"
-        table_upcoming += f"<tbody><tr><td>{upcoming_race['Date']}</td><td>{upcoming_race['Race']}</td></tr>"
-        table_upcoming += "</tbody></table>"
-    
-    if past_races == []:
-        return table_upcoming
-
-    table_previous = ""
-    table_previous += f"<table><h2>{'Finished GPs' if isF1Data else 'Finished Races'}</h2><thead><tr>{'' if isF1Data else '<th>Date</th>'}<th>Race Name</th><th>Winner</th></tr></thead><tbody>"
-    for data in past_races:
-        table_previous += f"<tr>{'' if isF1Data else '<td>'+data['Date']+'</td>'}<td>{data['Race']}</td><td>{data['Winner']}</td></tr>"
-    table_previous += "</tbody></table>"
-
-    return table_upcoming+table_previous
-
-def write_scraped_data(html_file: str, html_source: str):
-    # Insert the two new HTML tables inside scraped_data.HTML
-    with open(html_file, "w", encoding="UTF-8") as file:
-        html_boilerplate = "<!DOCTYPE html><html><body></body></html>"
-        file.write(html_boilerplate)
-        wrtite_pos = html_boilerplate.find("</body>")
-        file.write(html_boilerplate[:wrtite_pos])
-        file.write(html_source)
-        file.write(html_boilerplate[wrtite_pos:])
         
 scrape_pcs()
 scrape_gprs()
