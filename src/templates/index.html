@@ -28,7 +28,7 @@
     })
     .then((respponse) => {
       if (!respponse.ok) {
-        throw new Error('HTTP Error!, Status: ' + respponse.status.toString());
+        throw new Error('HTTP Error!, status: ' + respponse.status.toString());
       }
       location.reload()
     })
