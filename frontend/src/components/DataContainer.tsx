@@ -9,7 +9,7 @@ type RaceData = {
   Date: string;
   Race: string;
   Winner: string;
-}
+};
 
 function DataContainer({ children, endpoint }: Props) {
   const [data, setData] = useState<RaceData[]>([]);
@@ -33,7 +33,7 @@ function DataContainer({ children, endpoint }: Props) {
     if (!item.Winner) {
       return (
         <>
-          <h1>Upcoming race</h1>
+          <h2>Upcoming race</h2>
           <tbody>
             <tr>
               <th>Date</th>
@@ -52,10 +52,10 @@ function DataContainer({ children, endpoint }: Props) {
 
   const previousRaces = (
     <>
-      <h1>Previous races</h1>
+      <h2>Previous races</h2>
       <tbody>
         <tr>
-          {endpoint == 'get-data-cycling' ? <th>Date</th> : null}
+          {endpoint == "get-data-cycling" ? <th>Date</th> : null}
           <th>Race</th>
           <th>Winner</th>
         </tr>
