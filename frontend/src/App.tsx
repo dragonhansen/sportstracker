@@ -8,7 +8,6 @@ function App() {
       <title>dragonhansen's Sports Tracker</title>
       <div className='title-container'>
       <h1 id="website-title">dragonhansen's Sports Tracker</h1>
-      <button>Update using JS fetch</button>
       </div>
       <div className='outer-container'>
         <div className='stats-container'>
