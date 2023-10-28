@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, url_for, redirect
-import time
+from flask import Flask, render_template, url_for, redirect
 from apscheduler.schedulers.background import BackgroundScheduler
-from scraper import scrape_gprs, scrape_pcs
+from backend.scraper import scrape_gprs, scrape_pcs
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='frontend/dist', static_folder='frontend/dist/assets')
 
 scheduler = BackgroundScheduler()
 

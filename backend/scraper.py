@@ -1,14 +1,5 @@
-import requests
+import requests, json
 from bs4 import BeautifulSoup
-import sqlite3
-
-conn = sqlite3.connect('backend/data.db')
-
-cursor = conn.cursor()
-
-cursor.execute("CREATE TABLE IF NOT EXISTS cycling_data (Date TEXT, Race TEXT, Winner TEXT, IsUpcoming INTEGER)")
-cursor.execute("CREATE TABLE IF NOT EXISTS f1_data (Date TEXT, Race TEXT, Winner TEXT, IsUpcoming INTEGER)")
-
 
 def scrape_pcs():
     # URL of the page to scrape
@@ -30,34 +21,33 @@ def scrape_pcs():
         # Find all table rows (excluding the header row)
         rows = soup.select(".table-cont table tbody tr")
 
+         # Initialize lists to store the scraped data from past races
+        past_races = []
+
         # Loop through the rows and extract the data
         for row in rows:
             date = row.select_one("td.cu500").get_text(strip=True)
             race_name = row.select("td")[2].get_text(strip=True)
             winner = row.select("td")[3].get_text(strip=True)
 
+            upcoming_race = None
+
             # If there is no winner break from the loop and define the race to be the upcoming race
             if winner == "":
-                cursor.execute("INSERT INTO cycling_data (Date, Race, Winner, IsUpcoming) VALUES (?, ?, ?, ?)", (date, race_name, winner, 1))
+                upcoming_race = ({"Date": date, "Race": race_name})
                 break
 
             # Append scraped data to list
-            cursor.execute("INSERT INTO cycling_data (Date, Race, Winner, IsUpcoming) VALUES (?, ?, ?, ?)", (date, race_name, winner, 0))
+            past_races.append({"Date": date, "Race": race_name, "Winner": winner})
 
-        try:
-            # Execute a SELECT query to retrieve data from the table
-            cursor.execute("SELECT * FROM cycling_data")
+        # Define the file path where you want to save the JSON data
+        file_path = "backend/data.json"
 
-            # Fetch all rows from the result set
-            rows = cursor.fetchall()
-
-            # Iterate over the rows and print them
-            for row in rows:
-                print(row)
-
-        except UnboundLocalError as e:
-            print(e)
-            print("Error: could net scrape PCS data properly, aborting...")
+        # Open the file in write mode and save the data as JSON
+        with open(file_path, 'w') as json_file:
+            json.dump(past_races, json_file)
+            if upcoming_race:
+                json.dump(upcoming_race, json_file)
 
 def scrape_gprs():
      # URL of the page to scrape
@@ -103,21 +93,6 @@ def scrape_gprs():
 
             # We have defined the upcoming race data and the grand prix was not cancelled so no more scraping
             break
-
-        try:
-            # Execute a SELECT query to retrieve data from the table
-            cursor.execute("SELECT * FROM f1_data")
-
-            # Fetch all rows from the result set
-            rows = cursor.fetchall()
-
-            # Iterate over the rows and print them
-            for row in rows:
-                print(row)
-
-        except UnboundLocalError as e:
-            print(e)
-            print("Error: could net scrape F1 data properly, aborting...")
         
 scrape_pcs()
-scrape_gprs()
+#scrape_gprs()
