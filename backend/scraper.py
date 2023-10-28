@@ -41,7 +41,7 @@ def scrape_pcs():
             past_races.append({"Date": date, "Race": race_name, "Winner": winner})
 
         # Define the file path where you want to save the JSON data
-        file_path = "backend/data.json"
+        file_path = "backend/cycling_data.json"
 
         # Open the file in write mode and save the data as JSON
         with open(file_path, 'w') as json_file:
@@ -67,6 +67,9 @@ def scrape_gprs():
 
         # Find the F1 2023 Race winners container
         rows = soup.find("h2", text="F1 2023 winners").find_next("table").select("tbody tr")
+
+        # Initialize lists to store the scraped data from past races
+        past_races = []
         
         for row in rows:
             # Check if entires for grand prixs and winners exist and find the text if they do
@@ -77,7 +80,7 @@ def scrape_gprs():
 
             # If there was a winner append the data to the past races list and continue
             if winner:
-                cursor.execute("INSERT INTO f1_data (Date, Race, Winner, IsUpcoming) VALUES (?, ?, ?, ?)", ("", gp_text, winner_text, 0))
+                past_races.append({"Race": gp_text, "Winner": winner_text})
                 continue
 
             # There was not any winner so either the grand prix was cancelled or we have reached the upcoming grand prix
@@ -89,10 +92,20 @@ def scrape_gprs():
             if date_text == "Cancelled":
                 continue
 
-            cursor.execute("INSERT INTO f1_data (Date, Race, Winner, IsUpcoming) VALUES (?, ?, ?, ?)", (date_text, gp_text, "", 1))
+            upcoming_race = ({"Date": date_text, "Race": gp_text})
 
             # We have defined the upcoming race data and the grand prix was not cancelled so no more scraping
             break
+
+        # Define the file path where you want to save the JSON data
+        file_path = "backend/f1_data.json"
+
+        # Open the file in write mode and save the data as JSON
+        with open(file_path, 'w') as json_file:
+            json.dump(past_races, json_file)
+            if upcoming_race:
+                pass
+                #json.dump(upcoming_race, json_file)
         
 scrape_pcs()
-#scrape_gprs()
+scrape_gprs()
