@@ -5,8 +5,14 @@ interface Props {
   endpoint: string;
 }
 
+type RaceData = {
+  Date: string;
+  Race: string;
+  Winner: string;
+}
+
 function DataContainer({ children, endpoint }: Props) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<RaceData[]>([]);
 
   const fetchData = () => {
     fetch(endpoint)

@@ -2,7 +2,7 @@ import requests, json
 from bs4 import BeautifulSoup
 
 def scrape_pcs():
-    # URL of the page to scrape
+    # URL of the page to scrape 
     url = "https://www.procyclingstats.com/races.php"
 
     try:
@@ -35,6 +35,9 @@ def scrape_pcs():
             # If there is no winner break from the loop and define the race to be the upcoming race
             if winner == "":
                 upcoming_race = ({"Date": date, "Race": race_name})
+
+                # Append upcoming race to past races bacuse we only dump one JSON file
+                past_races.append(upcoming_race)
                 break
 
             # Append scraped data to list
@@ -94,6 +97,9 @@ def scrape_gprs():
 
             upcoming_race = ({"Date": date_text, "Race": gp_text})
 
+            # Append upcoming race to past races bacuse we only dump one JSON file
+            past_races.append(upcoming_race)
+
             # We have defined the upcoming race data and the grand prix was not cancelled so no more scraping
             break
 
@@ -103,9 +109,6 @@ def scrape_gprs():
         # Open the file in write mode and save the data as JSON
         with open(file_path, 'w') as json_file:
             json.dump(past_races, json_file)
-            if upcoming_race:
-                pass
-                #json.dump(upcoming_race, json_file)
         
 scrape_pcs()
 scrape_gprs()
