@@ -20,8 +20,15 @@ font-size: large;
 margin-left: 25px;
 }
 
+
 .outer-container {
 display: inline-flex;
+}
+
+@media only screen and (max-width: 800px) {
+  .outer-container {
+    flex-direction: column;
+  }
 }
 
 /* Style for the iframe container */
