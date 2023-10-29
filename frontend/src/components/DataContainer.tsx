@@ -47,7 +47,7 @@ function DataContainer({ children, endpoint }: Props) {
         </>
       );
     }
-    return "";
+    return <></>;
   });
 
   const previousRaces = (
@@ -61,7 +61,7 @@ function DataContainer({ children, endpoint }: Props) {
         </tr>
         {data.map((item, index) => {
           if (!item.Winner) {
-            return "";
+            return <></>;
           } else {
             return (
               <tr key={index}>

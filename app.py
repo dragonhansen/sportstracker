@@ -20,7 +20,6 @@ def get_data():
 
     # Use request to get endpoint
     endpoint = request.path
-    print(endpoint)
 
     # Specify the path to your JSON file depending on the endpoint
     if endpoint == '/get-data-cycling':
