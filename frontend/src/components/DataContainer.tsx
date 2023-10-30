@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 interface Props {
   children: string;
   endpoint: string;
+  className?: string;
+  datatype: string;
 }
 
 type RaceData = {
@@ -11,7 +13,7 @@ type RaceData = {
   Winner: string;
 };
 
-function DataContainer({ children, endpoint }: Props) {
+function DataContainer({ children, endpoint, datatype}: Props) {
   const [data, setData] = useState<RaceData[]>([]);
 
   const fetchData = () => {
@@ -29,16 +31,22 @@ function DataContainer({ children, endpoint }: Props) {
     fetchData();
   }, []);
 
+  // Use different terminology for F1 and cycling
+  const headers: {upcoming: string, previous: string, race: string} = (datatype === 'cycling') ? 
+  {upcoming: 'Upcoming Race', previous: 'Previous Races', race: 'Race'} : {upcoming: 'Upcoming GPs', previous: 'Previous GPs', race: 'Grand Prix'};
+
   const upcomingRace = data.map((item) => {
     if (!item.Winner) {
       return (
         <>
-          <h2>Upcoming race</h2>
-          <tbody>
+          <thead>
+          <h2>{headers.upcoming}</h2>
             <tr>
               <th>Date</th>
-              <th>Race</th>
+              <th>{headers.race}</th>
             </tr>
+          </thead>
+          <tbody>
             <tr>
               <td>{item.Date}</td>
               <td>{item.Race}</td>
@@ -52,13 +60,15 @@ function DataContainer({ children, endpoint }: Props) {
 
   const previousRaces = (
     <>
-      <h2>Previous races</h2>
-      <tbody>
+      <thead>
+      <h2>{headers.previous}</h2>
         <tr>
           {endpoint == "get-data-cycling" ? <th>Date</th> : null}
-          <th>Race</th>
+          <th>{headers.race}</th>
           <th>Winner</th>
         </tr>
+      </thead>
+      <tbody>
         {data.map((item, index) => {
           if (!item.Winner) {
             return <></>;
@@ -77,11 +87,13 @@ function DataContainer({ children, endpoint }: Props) {
   );
 
   return (
-    <div>
+    <>
       <h1>{children}</h1>
-      {upcomingRace}
-      {previousRaces}
-    </div>
+      <table>
+        {upcomingRace}
+        {previousRaces}
+      </table>
+    </>
   );
 }
 

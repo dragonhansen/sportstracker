@@ -7,19 +7,8 @@ body{
 
 .title-container {
 display: flex;
-align-items: center;
+margin: 20px;
 }
-
-.title-container button {
-color: white;
-background-color: #313030;
-border-color: #313030;
-border-radius: 10px;
-padding: 5px;
-font-size: large;
-margin-left: 25px;
-}
-
 
 .outer-container {
 display: inline-flex;
@@ -48,15 +37,11 @@ padding: 0px;
 margin: 0px;
 }
 
-.data-container table {
+.stats-container table {
 text-align: left;
 }
 
-.data-container th, td {
+.stats-container th, td {
 padding-right:  20px;
 padding-bottom: 5px;
-}
-
-#website-title {
-margin-left: 10px;
 }

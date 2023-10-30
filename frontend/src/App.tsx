@@ -6,16 +6,16 @@ function App() {
     <>
       <title>dragonhansen's Sports Tracker</title>
       <div className="title-container">
-        <h1 id="website-title">dragonhansen's Sports Tracker</h1>
+        <h1>dragonhansen's Sports Tracker</h1>
       </div>
       <div className="outer-container">
         <div className="stats-container">
-          <DataContainer endpoint="get-data-cycling">
+          <DataContainer className="data-container" endpoint="get-data-cycling" datatype="cycling">
             Cycling races and results
           </DataContainer>
         </div>
         <div className="stats-container">
-          <DataContainer endpoint="get-data-f1">
+          <DataContainer className="data-container" endpoint="get-data-f1" datatype="f1">
             F1 GP's and results
           </DataContainer>
         </div>
