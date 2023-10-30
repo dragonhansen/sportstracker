@@ -14,7 +14,7 @@ margin: 20px;
 display: inline-flex;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 820px) {
   .outer-container {
     flex-direction: column;
   }
