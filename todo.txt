@@ -1,3 +1,3 @@
 TODO:
-1. Refactor component
+1. Should probably refactor component but will not bother unless i extend the site
 2. Highlight rows

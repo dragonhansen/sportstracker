@@ -84,7 +84,7 @@ function DataContainer({ children, endpoint, datatype, includeDate}: Props) {
           } else {
             noPreviousRaces = false;
             return (
-              <tr key={index}>
+              <tr key={index} className="highlighted-row">
                 {includeDate ? <td>{item.Date}</td> : null}
                 <td>{item.Race}</td>
                 <td>{item.Winner}</td>
