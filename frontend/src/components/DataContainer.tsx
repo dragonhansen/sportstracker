@@ -33,7 +33,7 @@ function DataContainer({ children, endpoint, datatype}: Props) {
 
   // Use different terminology for F1 and cycling
   const headers: {upcoming: string, previous: string, race: string} = (datatype === 'cycling') ? 
-  {upcoming: 'Upcoming Race', previous: 'Previous Races', race: 'Race'} : {upcoming: 'Upcoming GPs', previous: 'Previous GPs', race: 'Grand Prix'};
+  {upcoming: 'Upcoming Race', previous: 'Previous Races', race: 'Race'} : {upcoming: "Upcoming GP's", previous: "Previous GP's", race: 'Grand Prix'};
 
   const upcomingRace = data.map((item) => {
     if (!item.Winner) {
@@ -63,7 +63,7 @@ function DataContainer({ children, endpoint, datatype}: Props) {
       <thead>
       <h2>{headers.previous}</h2>
         <tr>
-          {endpoint == "get-data-cycling" ? <th>Date</th> : null}
+          {datatype === 'cycling' ? <th>Date</th> : null}
           <th>{headers.race}</th>
           <th>Winner</th>
         </tr>
@@ -75,7 +75,7 @@ function DataContainer({ children, endpoint, datatype}: Props) {
           } else {
             return (
               <tr key={index}>
-                {item.Date ? <td>{item.Date}</td> : null}
+                {datatype === 'cycling' ? <td>{item.Date}</td> : null}
                 <td>{item.Race}</td>
                 <td>{item.Winner}</td>
               </tr>

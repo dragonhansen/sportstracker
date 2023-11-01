@@ -8,6 +8,7 @@ body{
 .title-container {
 display: flex;
 margin: 20px;
+white-space: nowrap;
 }
 
 .outer-container {

@@ -1,2 +1,4 @@
 TODO:
 1. Refactor component
+2 .Set nowrap
+3. Fix months
