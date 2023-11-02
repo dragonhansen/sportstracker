@@ -12,6 +12,8 @@ def index():
 
 @app.route('/trigger-scraper', methods=['POST'])
 def trigger_scraper():
+    # Currently no button for triggering scraper so just redirect to root
+    return redirect(url_for('index'))
     run_scraper()
 
 @app.route('/get-data-cycling', methods=['GET'])
@@ -49,4 +51,4 @@ scheduler.add_job(run_scraper, "interval", seconds=900)
 scheduler.start()
 
 if __name__ == "__main__": 
-    app.run(debug=True, host="0.0.0.0", port=8000)
+    app.run(debug=False, host="0.0.0.0", port=8000)

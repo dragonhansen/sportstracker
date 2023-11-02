@@ -126,5 +126,3 @@ def scrape_gprs():
         
 scrape_pcs()
 scrape_gprs()
-
-print(convertMonthToNumber('05 May'))

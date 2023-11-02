@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 
 # Define the command to run your Python application
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-w", "4", "app:app"]
