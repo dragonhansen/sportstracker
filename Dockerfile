@@ -4,11 +4,10 @@ FROM python:3.9
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the application code and requirements.txt into the container
-COPY src/app.py /app/
-COPY src/scraper.py /app/
-COPY src/static/* /app/static/
-COPY src/templates/* /app/templates/
+# Copy the application code and requirements.txt into the 
+COPY /backend/scraper.py /app/backend/scraper.py
+COPY /frontend/dist/ /app/frontend/dist/
+COPY app.py /app/
 COPY requirements.txt /app/
 
 # Install any project dependencies
@@ -18,4 +17,4 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 
 # Define the command to run your Python application
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-w", "4", "app:app"]

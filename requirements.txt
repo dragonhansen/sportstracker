@@ -2,3 +2,4 @@ flask
 apscheduler
 beautifulsoup4==4.10.0
 requests
+gunicorn

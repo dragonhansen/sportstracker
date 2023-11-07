@@ -12,6 +12,8 @@ def index():
 
 @app.route('/trigger-scraper', methods=['POST'])
 def trigger_scraper():
+    # Currently no button for triggering scraper so just redirect to root
+    return redirect(url_for('index'))
     run_scraper()
 
 @app.route('/get-data-cycling', methods=['GET'])
@@ -20,7 +22,6 @@ def get_data():
 
     # Use request to get endpoint
     endpoint = request.path
-    print(endpoint)
 
     # Specify the path to your JSON file depending on the endpoint
     if endpoint == '/get-data-cycling':
@@ -50,4 +51,4 @@ scheduler.add_job(run_scraper, "interval", seconds=900)
 scheduler.start()
 
 if __name__ == "__main__": 
-    app.run(debug=True, host="localhost", port=8000)
+    app.run(debug=False, host="0.0.0.0", port=8000)

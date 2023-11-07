@@ -1,6 +1,2 @@
 TODO:
-1. Write scraper output to JSON
-2. Create an api endpoint that GETs the JSON
-3. Display JSON in react app
-4. Fix CSS
-5. Refactor and cleanup
+1. Should probably refactor component but will not bother unless i extend the site

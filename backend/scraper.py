@@ -1,5 +1,19 @@
 import requests, json
 from bs4 import BeautifulSoup
+import calendar
+
+def convertMonthToNumber(date: str):
+    [day, month] = date.split(' ')
+    newDate: str = day + '.'
+    months = calendar.month_name
+    for i, other_month in enumerate(months):
+        if month == other_month:
+            if i < 10:
+                newDate += '0'
+            newDate += str(i)
+    
+    return newDate
+
 
 def scrape_pcs():
     # URL of the page to scrape 
@@ -95,7 +109,7 @@ def scrape_gprs():
             if date_text == "Cancelled":
                 continue
 
-            upcoming_race = ({"Date": date_text, "Race": gp_text})
+            upcoming_race = ({"Date": convertMonthToNumber(date_text), "Race": gp_text})
 
             # Append upcoming race to past races bacuse we only dump one JSON file
             past_races.append(upcoming_race)

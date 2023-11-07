@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 
 interface Props {
   children: string;
+  className?: string;
   endpoint: string;
+  datatype: string;
+  includeDate?: boolean;
 }
 
 type RaceData = {
@@ -11,7 +14,7 @@ type RaceData = {
   Winner: string;
 };
 
-function DataContainer({ children, endpoint }: Props) {
+function DataContainer({ children, endpoint, datatype, includeDate}: Props) {
   const [data, setData] = useState<RaceData[]>([]);
 
   const fetchData = () => {
@@ -29,16 +32,30 @@ function DataContainer({ children, endpoint }: Props) {
     fetchData();
   }, []);
 
+  // If there is no data at all, something most likely went wrong so we bail out and notify the user
+  if (data.length === 0) {return <h2>Error, no data was received</h2>}
+
+  // Use different terminology for F1 and cycling
+  const headers: {upcoming: string, previous: string, race: string} = (datatype === 'cycling') ? 
+  {upcoming: 'Upcoming Race', previous: 'Previous Races', race: 'Race'} : {upcoming: "Upcoming GP's", previous: "Previous GP's", race: 'Grand Prix'};
+
+  // Define some boolean values that decides if parts of the containers should be renderen - this is probably not an ideal solution
+  let noPreviousRaces: boolean = true;
+  let noUpcomingRaces: boolean = true;
+
   const upcomingRace = data.map((item) => {
     if (!item.Winner) {
+      noUpcomingRaces = false;
       return (
         <>
-          <h2>Upcoming race</h2>
-          <tbody>
+          <thead>
+          <h2>{headers.upcoming}</h2>
             <tr>
               <th>Date</th>
-              <th>Race</th>
+              <th>{headers.race}</th>
             </tr>
+          </thead>
+          <tbody>
             <tr>
               <td>{item.Date}</td>
               <td>{item.Race}</td>
@@ -47,25 +64,28 @@ function DataContainer({ children, endpoint }: Props) {
         </>
       );
     }
-    return "";
+    return <></>;
   });
 
   const previousRaces = (
     <>
-      <h2>Previous races</h2>
-      <tbody>
+      <thead>
+      <h2>{headers.previous}</h2>
         <tr>
-          {endpoint == "get-data-cycling" ? <th>Date</th> : null}
-          <th>Race</th>
+          {includeDate ? <th>Date</th> : null}
+          <th>{headers.race}</th>
           <th>Winner</th>
         </tr>
+      </thead>
+      <tbody>
         {data.map((item, index) => {
           if (!item.Winner) {
-            return "";
+            return <></>;
           } else {
+            noPreviousRaces = false;
             return (
-              <tr key={index}>
-                {item.Date ? <td>{item.Date}</td> : null}
+              <tr key={index} className="highlighted-row">
+                {includeDate ? <td>{item.Date}</td> : null}
                 <td>{item.Race}</td>
                 <td>{item.Winner}</td>
               </tr>
@@ -77,11 +97,13 @@ function DataContainer({ children, endpoint }: Props) {
   );
 
   return (
-    <div>
+    <>
       <h1>{children}</h1>
-      {upcomingRace}
-      {previousRaces}
-    </div>
+      <table>
+        {noUpcomingRaces ? <thead><h2>{headers.upcoming}</h2><tr>Season is over, very sad!</tr></thead> : upcomingRace}
+        {noPreviousRaces ? null : previousRaces}
+      </table>
+    </>
   );
 }
 

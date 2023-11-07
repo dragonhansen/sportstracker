@@ -1,3 +1,5 @@
 venv/
 __pycache__/
-backend/__pycache__
+backend/
+backend/cycling_data.json
+backend/f1_data.json
