@@ -1,8 +1,10 @@
 from flask import Flask, render_template, url_for, redirect, jsonify, json, request
 from apscheduler.schedulers.background import BackgroundScheduler
-from backend.scraper import scrape_gprs, scrape_pcs
+from backend.scraper import Scraper
 
 app = Flask(__name__, template_folder='frontend/dist', static_folder='frontend/dist/assets')
+
+scraper = Scraper()
 
 scheduler = BackgroundScheduler()
 
@@ -43,8 +45,8 @@ def get_data():
 # Define a function to run the scraper
 def run_scraper():
     print("Running the scraper...")
-    scrape_pcs()
-    scrape_gprs()
+    scraper.scrape_pcs()
+    scraper.scrape_gprs()
     print("Scraper finished")
 
 scheduler.add_job(run_scraper, "interval", seconds=900)
