@@ -12,12 +12,6 @@ scheduler = BackgroundScheduler()
 def index():
     return render_template("index.html")
 
-@app.route('/trigger-scraper', methods=['POST'])
-def trigger_scraper():
-    # Currently no button for triggering scraper so just redirect to root
-    return redirect(url_for('index'))
-    run_scraper()
-
 @app.route('/get-data-cycling', methods=['GET'])
 @app.route('/get-data-f1', methods=['GET'])
 def get_data():
@@ -49,7 +43,7 @@ def run_scraper():
     scraper.scrape_gprs()
     print("Scraper finished")
 
-scheduler.add_job(run_scraper, "interval", seconds=10)
+scheduler.add_job(run_scraper, "interval", seconds=900)
 scheduler.start()
 
 if __name__ == "__main__": 
