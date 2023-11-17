@@ -37,7 +37,7 @@ function DataContainer({ children, endpoint, datatype, includeDate}: Props) {
 
   // Use different terminology for F1 and cycling
   const headers: {upcoming: string, previous: string, race: string} = (datatype === 'cycling') ? 
-  {upcoming: 'Upcoming Race', previous: 'Previous Races', race: 'Race'} : {upcoming: "Upcoming GP's", previous: "Previous GP's", race: 'Grand Prix'};
+  {upcoming: 'Upcoming Race', previous: 'Previous Races', race: 'Race'} : {upcoming: "Upcoming GP", previous: "Previous GP's", race: 'Grand Prix'};
 
   // Define some boolean values that decides if parts of the containers should be renderen - this is probably not an ideal solution
   let noPreviousRaces: boolean = true;
