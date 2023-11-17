@@ -49,7 +49,7 @@ def run_scraper():
     scraper.scrape_gprs()
     print("Scraper finished")
 
-scheduler.add_job(run_scraper, "interval", seconds=900)
+scheduler.add_job(run_scraper, "interval", seconds=10)
 scheduler.start()
 
 if __name__ == "__main__": 

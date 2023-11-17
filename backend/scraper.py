@@ -9,7 +9,7 @@ class Scraper:
     def __init__(self):
         self.state = {"cycling_state": None, "f1_state": None}
 
-    def __convertMonthToNumber(self, date: str):
+    def __convertMonthToNumber(self, date: str) -> str:
         [day, month] = date.split(' ')
         newDate: str = day + '.'
         months = calendar.month_name
@@ -18,6 +18,20 @@ class Scraper:
                 if i > 10:
                     return newDate + str(i)
                 return newDate + '0'
+            
+    def __convertNamesToLowerCase(self, name: str) -> str:
+        full_name = name.split()
+        first_name = full_name[-1]
+        surnames: list = full_name[:-1]
+        # Oneliner that converts every capitalized surname to lowercase except the first character
+        surnames_lower_case:list = list(map(lambda x: x[0] + x[1:].lower(), surnames))
+        # Insert the first into the converted surname list to get a list representation of the full name
+        surnames_lower_case.insert(0, first_name)
+        # Join the list into a string seperated by whitespaces and return the name
+        converted_name = " ".join(surnames_lower_case)
+        return converted_name
+        
+
 
 
     def scrape_pcs(self):
@@ -66,7 +80,7 @@ class Scraper:
                     break
 
                 # Append scraped data to list
-                past_races.append({"Date": date, "Race": race_name, "Winner": winner})
+                past_races.append({"Date": date, "Race": race_name, "Winner": self.__convertNamesToLowerCase(winner)})
 
             # Define the file path where you want to save the JSON data
             file_path = "backend/cycling_data.json"
