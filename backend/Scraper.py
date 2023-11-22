@@ -9,7 +9,7 @@ class Scraper(ABC):
     file_path: str
     state: BeautifulSoup = None
 
-    def get_soup(self) -> BeautifulSoup:
+    def __get_soup(self) -> BeautifulSoup:
         try:
             # Send an HTTP GET request
             response = requests.get(self.url)
@@ -24,23 +24,23 @@ class Scraper(ABC):
             return BeautifulSoup(response.text, "html.parser")
 
     @abstractmethod
-    def get_race_data(self, soup: BeautifulSoup) -> list:
+    def _get_race_data(self, soup: BeautifulSoup) -> list:
         pass
 
-    def write_scraped_data(self, race_data: list):
+    def __write_scraped_data(self, race_data: list):
         # Open the file in write mode and save the data as JSON
         with open(self.file_path, 'w') as json_file:
             json.dump(race_data, json_file)
     
     def scrape(self):
-        soup = self.get_soup()
+        soup = self.__get_soup()
         # Bail out if the website has not changed since last scrape
         if soup == self.state:
             print("No change in data, arboting scrape!")
             return
         self.state = soup
-        past_races = self.get_race_data(soup)
-        self.write_scraped_data(past_races)
+        past_races = self._get_race_data(soup)
+        self.__write_scraped_data(past_races)
 
 class CyclingScraper(Scraper):
 
@@ -48,7 +48,7 @@ class CyclingScraper(Scraper):
         self.url = "https://www.procyclingstats.com/races.php"
         self.file_path = "backend/cycling_data.json"
     
-    def get_race_data(self, soup: BeautifulSoup) -> list:
+    def _get_race_data(self, soup: BeautifulSoup) -> list:
         # Find all table rows (excluding the header row)
         rows = soup.select(".table-cont table tbody tr")
 
@@ -78,7 +78,7 @@ class F1Scraper(Scraper):
         self.url = "https://gpracingstats.com/"
         self.file_path = "backend/f1_data.json"
 
-    def get_race_data(self, soup: BeautifulSoup) -> list:
+    def _get_race_data(self, soup: BeautifulSoup) -> list:
         # Find the F1 2023 Race winners container
         rows = soup.find("h2", text="F1 2023 winners").find_next("table").select("tbody tr")
         # Initialize lists to store the scraped data from past races

@@ -44,7 +44,7 @@ def run_scraper():
     f1_scraper.scrape()
     print("Scraper finished")
 
-scheduler.add_job(run_scraper, "interval", seconds=10)
+scheduler.add_job(run_scraper, "interval", seconds=900)
 scheduler.start()
 
 if __name__ == "__main__": 
