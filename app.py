@@ -1,10 +1,11 @@
 from flask import Flask, render_template, url_for, redirect, jsonify, json, request
 from apscheduler.schedulers.background import BackgroundScheduler
-from backend.scraper import Scraper
+from backend.Scraper import CyclingScraper, F1Scraper
 
 app = Flask(__name__, template_folder='frontend/dist', static_folder='frontend/dist/assets')
 
-scraper = Scraper()
+cycling_scraper = CyclingScraper()
+f1_scraper = F1Scraper()
 
 scheduler = BackgroundScheduler()
 
@@ -39,8 +40,8 @@ def get_data():
 # Define a function to run the scraper
 def run_scraper():
     print("Running the scraper...")
-    scraper.scrape_pcs()
-    scraper.scrape_gprs()
+    cycling_scraper.main()
+    f1_scraper.main()
     print("Scraper finished")
 
 scheduler.add_job(run_scraper, "interval", seconds=900)
