@@ -40,11 +40,11 @@ def get_data():
 # Define a function to run the scraper
 def run_scraper():
     print("Running the scraper...")
-    cycling_scraper.main()
-    f1_scraper.main()
+    cycling_scraper.scrape()
+    f1_scraper.scrape()
     print("Scraper finished")
 
-scheduler.add_job(run_scraper, "interval", seconds=900)
+scheduler.add_job(run_scraper, "interval", seconds=10)
 scheduler.start()
 
 if __name__ == "__main__": 

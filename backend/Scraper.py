@@ -6,13 +6,10 @@ from backend.util import convertNamesToLowerCase, convertMonthToNumber
 class Scraper(ABC):
 
     url: str
-    soup: BeautifulSoup
-    state: BeautifulSoup
-    past_races: list
-    upcoming_race: dict
     file_path: str
+    state: BeautifulSoup = None
 
-    def getSoup(self):
+    def get_soup(self) -> BeautifulSoup:
         try:
             # Send an HTTP GET request
             response = requests.get(self.url)
@@ -24,18 +21,10 @@ class Scraper(ABC):
         # Check if the request was successful
         if response.status_code == 200:
             # Parse the HTML content of the page
-            self.soup = BeautifulSoup(response.text, "html.parser")
-
-            return
-
-            # Bail out if the website has not changed since last scrape
-            if self.state == self.soup:
-                print("No change in data, arboting scrape!")
-                return
-            self.state = self.soup
+            return BeautifulSoup(response.text, "html.parser")
 
     @abstractmethod
-    def scrape(self):
+    def get_race_data(self, soup: BeautifulSoup) -> list:
         pass
 
     def write_scraped_data(self, race_data: list):
@@ -43,10 +32,15 @@ class Scraper(ABC):
         with open(self.file_path, 'w') as json_file:
             json.dump(race_data, json_file)
     
-    def main(self):
-        self.getSoup()
-        self.scrape()
-        self.write_scraped_data(self.past_races)
+    def scrape(self):
+        soup = self.get_soup()
+        # Bail out if the website has not changed since last scrape
+        if soup == self.state:
+            print("No change in data, arboting scrape!")
+            return
+        self.state = soup
+        past_races = self.get_race_data(soup)
+        self.write_scraped_data(past_races)
 
 class CyclingScraper(Scraper):
 
@@ -54,12 +48,12 @@ class CyclingScraper(Scraper):
         self.url = "https://www.procyclingstats.com/races.php"
         self.file_path = "backend/cycling_data.json"
     
-    def scrape(self):
+    def get_race_data(self, soup: BeautifulSoup) -> list:
         # Find all table rows (excluding the header row)
-        rows = self.soup.select(".table-cont table tbody tr")
+        rows = soup.select(".table-cont table tbody tr")
 
         # Initialize lists to store the scraped data from past races
-        self.past_races = []
+        past_races = []
 
         # Loop through the rows and extract the data
         for row in rows:
@@ -67,29 +61,28 @@ class CyclingScraper(Scraper):
             race_name = row.select("td")[2].get_text(strip=True)
             winner = row.select("td")[3].get_text(strip=True)
 
-            self.upcoming_race = None
-
             # If there is no winner break from the loop and define the race to be the upcoming race
             if winner == "":
-                self.upcoming_race = ({"Date": date, "Race": race_name})
+                upcoming_race = ({"Date": date, "Race": race_name})
 
                 # Append upcoming race to past races bacuse we only dump one JSON file
-                self.past_races.append(self.upcoming_race)
+                past_races.append(upcoming_race)
                 break
 
             # Append scraped data to list
-            self.past_races.append({"Date": date, "Race": race_name, "Winner": convertNamesToLowerCase(winner)})
+            past_races.append({"Date": date, "Race": race_name, "Winner": convertNamesToLowerCase(winner)})
+        return past_races
 
 class F1Scraper(Scraper):
     def __init__(self):
         self.url = "https://gpracingstats.com/"
         self.file_path = "backend/f1_data.json"
 
-    def scrape(self):
+    def get_race_data(self, soup: BeautifulSoup) -> list:
         # Find the F1 2023 Race winners container
-        rows = self.soup.find("h2", text="F1 2023 winners").find_next("table").select("tbody tr")
+        rows = soup.find("h2", text="F1 2023 winners").find_next("table").select("tbody tr")
         # Initialize lists to store the scraped data from past races
-        self.past_races = []
+        past_races = []
         
         for row in rows:
             # Check if entires for grand prixs and winners exist and find the text if they do
@@ -100,7 +93,7 @@ class F1Scraper(Scraper):
 
             # If there was a winner append the data to the past races list and continue
             if winner:
-                self.past_races.append({"Race": gp_text, "Winner": winner_text})
+                past_races.append({"Race": gp_text, "Winner": winner_text})
                 continue
 
             # There was not any winner so either the grand prix was cancelled or we have reached the upcoming grand prix
@@ -108,14 +101,16 @@ class F1Scraper(Scraper):
             gp_text = row.select_one("td").find_next().get_text(strip=True)
             date_text = row.select_one("td").find_next().findNext().get_text(strip=True)
 
-            # If we have been fooled and the grand prix was actully cancelled we continue
+            # If we have been fooled and the grand prix was actually cancelled we continue
             if date_text == "Cancelled":
                 continue
 
-            self.upcoming_race = ({"Date": convertMonthToNumber(date_text), "Race": gp_text})
+            # It was not the cancelled race and thus it must be the upcoming race
+            upcoming_race = ({"Date": convertMonthToNumber(date_text), "Race": gp_text})
 
             # Append upcoming race to past races bacuse we only dump one JSON file
-            self.past_races.append(self.upcoming_race)
+            past_races.append(upcoming_race)
 
             # We have defined the upcoming race data and the grand prix was not cancelled so no more scraping
             break
+        return past_races
