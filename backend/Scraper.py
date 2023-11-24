@@ -22,6 +22,9 @@ class Scraper(ABC):
         if response.status_code == 200:
             # Parse the HTML content of the page
             return BeautifulSoup(response.text, "html.parser")
+        else:
+            print(f"Did not get proper response from {self.url}, arborting...")
+            return
 
     @abstractmethod
     def _get_race_data(self, soup: BeautifulSoup) -> list:
